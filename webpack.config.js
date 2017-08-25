@@ -1,9 +1,13 @@
 var path = require('path');
 var ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var webpack = require('webpack');
 
 module.exports = {
     entry: [
+        'react-hot-loader/patch',
+        'webpack-dev-server/client?http://localhost:8888',
+        'webpack/hot/only-dev-server',
         path.join(__dirname, './src/main.jsx')
     ],
     output: {
@@ -19,9 +23,8 @@ module.exports = {
             {
                 test: /\.(js|jsx)$/,
                 exclude: /(node_modules|bower_components)/,
-                use: {
-                  loader: 'babel-loader'
-                }
+                loaders: ['react-hot-loader/webpack', 'babel-loader']
+                
             },
             {
               test: /\.(css)$/,
@@ -38,6 +41,15 @@ module.exports = {
             template: 'src/index.html',
             inject: 'body',
             filename: 'index.html'
-        })
+        }),
+        new webpack.HotModuleReplacementPlugin(),
     ],
+    devServer: {
+        host: 'localhost',
+        port: 8888,
+
+        historyApiFallback: true,
+
+        hot: true,
+    },
 }
