@@ -1,11 +1,7 @@
-import app from './components/App.jsx';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './style.css';
 
-const MyComp = (props) => {
+import App from './components/App.jsx';
 
-};
-
-ReactDOM.render(<MyComp></MyComp>, document.getElementById('root'));
-
-console.log(app.version);
+ReactDOM.render(<App />, document.getElementById('root'));

@@ -1,4 +1,6 @@
 var path = require('path');
+var ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: [
@@ -13,14 +15,29 @@ module.exports = {
         extensions: ['.js', '.jsx']
     },
     module: {
-        loaders: [
+        rules: [
             {
-                test: /\.jsx?$/,
-                loaders: [
-                    'babel-loader'
-                ],
-                include: path.join(__dirname, 'src')
+                test: /\.(js|jsx)$/,
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                  loader: 'babel-loader'
+                }
+            },
+            {
+              test: /\.(css)$/,
+              use: ExtractTextWebpackPlugin.extract({
+                fallback: 'style-loader',
+                use: ['css-loader', 'postcss-loader']
+              })
             }
-        ]
-    }
+          ]
+    },
+    plugins: [
+        new ExtractTextWebpackPlugin('style.css'),
+        new HtmlWebpackPlugin({
+            template: 'src/index.html',
+            inject: 'body',
+            filename: 'index.html'
+        })
+    ],
 }

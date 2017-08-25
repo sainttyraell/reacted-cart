@@ -1,7 +1,11 @@
-const version = 1.0;
+import React from 'react';
 
-const app = {
-    version: version
-};
+const App = React.createClass({
+    render: function() {
+        return (
+            <div>Hello from react</div>
+        )
+    }
+});
 
-export default app;
+export default App;
