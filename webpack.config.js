@@ -3,6 +3,10 @@ var ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var webpack = require('webpack');
 
+const extractSass = new ExtractTextWebpackPlugin({
+    filename: "[name].[contenthash].css"
+});
+
 module.exports = {
     entry: [
         'react-hot-loader/patch',
@@ -27,16 +31,26 @@ module.exports = {
                 
             },
             {
-              test: /\.(css)$/,
-              use: ExtractTextWebpackPlugin.extract({
-                fallback: 'style-loader',
-                use: ['css-loader', 'postcss-loader']
-              })
+                test: /\.scss$/,
+                use: extractSass.extract({
+                    use: [{
+                        loader: "css-loader"
+                    }, {
+                        loader: "sass-loader"
+                    }],
+                    fallback: "style-loader"
+                })
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
+                use: [
+                    'file-loader'
+                ]
             }
-          ]
+        ]
     },
     plugins: [
-        new ExtractTextWebpackPlugin('style.css'),
+        extractSass,
         new HtmlWebpackPlugin({
             template: 'src/index.html',
             inject: 'body',

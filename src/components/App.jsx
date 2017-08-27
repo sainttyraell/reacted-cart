@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { Component } from 'react';
+import Cart from './Cart/Cart';
+import './App.scss';
+import 'roboto-fontface/css/roboto/sass/roboto-fontface.scss';
 
-const App = React.createClass({
-    render: function() {
+class App extends Component {
+    render() {
         return (
-            <div>Hello from react 2</div>
-        )
+            <div className="app-container">   
+                <Cart />
+            </div>
+        );
     }
-});
+}
 
 export default App;
