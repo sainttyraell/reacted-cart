@@ -2,16 +2,34 @@ import React, { Component } from 'react';
 import Button from '../CartProductButton/CartProductButton';
 import { connect } from 'react-redux';
 
-import reducer from '../../../reducers/CartProduct.reducer';
 import './CartProduct.scss';
 
 class CartProduct extends Component {
     constructor(props) {
         super(props);
-        this.currency = '€';
+        this.state = {
+            quantity: this.props.product.quantity
+        }
+        this.currency = '€'
+        this.decrement = this.decrement.bind(this);
+        this.increment = this.increment.bind(this);        
     }
 
+    decrement() {
+        this.setState({
+            quantity: --this.state.quantity
+        })
+    }
+
+    increment() {
+        this.setState({
+            quantity: ++this.state.quantity
+        })
+    }
+    
     render() {
+        const { product } = this.props;
+        
         return (
             <div className="cart-product">
                 <div className="image">
@@ -21,14 +39,14 @@ class CartProduct extends Component {
                 </div>
                 <div className="content">
                     <div className="content-title">
-                        {this.props.product.title}
+                        {product.title}
                     </div>
                     <div className="content-description">
-                        {this.props.product.subtitle}
+                        {product.subtitle}
                     </div>
                     <div className="content-select">
                         <select>
-                            {this.props.product.sku.map((name, index) =>{
+                            {product.sku.map((name, index) =>{
                                 return <option key={index} value={name}>{name}</option>;
                             })}
                         </select>
@@ -36,19 +54,23 @@ class CartProduct extends Component {
                 </div>
                 <div className="actions">
                     <div className="actions-delete">
-
+                        usuń
                     </div>
                     <div className="actions-counter">
                         <Button
                             type="dec" 
-                            product={this.props.product}
+                            onClick={this.decrement}
+                            disabled={this.state.quantity === 0}
                         /> 
-                            <strong>{this.props.product.quantity} 
-                            {this.currency}</strong> 
-                        <Button type="inc" />
+                            <span>{this.state.quantity}</span> 
+                        <Button 
+                            type="inc"
+                            onClick={this.increment}
+                            disabled={this.state.quantity === product.quantity}
+                        />
                     </div>
                     <div className="actions-price">
-                        {this.props.product.quantity * this.props.product.price} 
+                        {this.state.quantity * product.price} {this.currency}
                     </div>
                 </div>
             </div>

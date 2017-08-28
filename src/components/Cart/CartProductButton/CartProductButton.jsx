@@ -5,17 +5,12 @@ class CartProductButton extends Component {
     constructor(props) {
         super(props)
     }
-
-    componentDidMount() {
-        this.quantity = this.props.product.quantity;
-    }
-
+    
     render() {
-        const {handleIncrement, handleDecrement} = this.props;
         return (
             this.props.type === 'inc' ? 
-            <button className="btn">+</button> :
-            <button className="btn">-</button>
+            <button className="btn"  {...this.props}>+</button> :
+            <button className="btn"  {...this.props}>-</button>
         );
     }
 }
