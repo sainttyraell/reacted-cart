@@ -14,13 +14,13 @@ class Cart extends Component {
 
     render() {
         if (this.props.hasErrored) {
-            return <p>Sorry! There was an error loading the items</p>;
+            return <p>Sorry! There was an error loading the cart</p>;
         }
         if (this.props.isLoading) {
-            return <p>Loading…</p>;
+            return <p>Loading cart…</p>;
         }
         if (!this.props.items.length) {
-            return <p>There is no products in your cart</p>;
+            return <p>There are no products in your cart</p>;
         }
         return (
             <div className="Cart">

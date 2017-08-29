@@ -7,6 +7,8 @@ import { deleteItem, updateItem } from '../../../actions/cartItems';
 
 import './CartProduct.scss';
 
+import trashImage from '../../../images/trash-icon.svg';
+
 class CartProduct extends Component {
     constructor(props) {
         super(props);
@@ -31,7 +33,7 @@ class CartProduct extends Component {
     }
 
     handleChange(event) {
-        this.state.product.activeSku =  event.target.value
+        this.state.product.activeSku = event.target.value
         this.props.updateProduct(this.state.product)
     }
     
@@ -42,7 +44,7 @@ class CartProduct extends Component {
             <div className="cart-product">
                 <div className="image">
                     <div className="image-box">
-                        <img src="http://placehold.it/80x80" className="image-image" /> 
+                        <img src={product.imageUrl} className="image-image" /> 
                     </div>
                 </div>
                 <div className="content">
@@ -58,7 +60,7 @@ class CartProduct extends Component {
                 </div>
                 <div className="actions">
                     <div className="actions-delete">
-                       <span onClick={::this.removeProduct}>usuń</span>
+                        <img onClick={::this.removeProduct} src={trashImage} />
                     </div>
                     <div className="actions-counter">
                         <Button
