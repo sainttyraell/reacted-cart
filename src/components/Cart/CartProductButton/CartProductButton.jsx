@@ -8,9 +8,10 @@ class CartProductButton extends Component {
     
     render() {
         return (
-            this.props.type === 'inc' ? 
-            <button className="btn"  {...this.props}>+</button> :
-            <button className="btn"  {...this.props}>-</button>
+            
+            <button className="btn" {...this.props}>
+                {this.props.type === 'inc' ? '+' : '-'}
+            </button> 
         );
     }
 }

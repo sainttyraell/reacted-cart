@@ -1,14 +1,16 @@
+import constants from '../constants/constants';
+
 class itemsService {
-    static getItems(url) {
-      return fetch('http://localhost:5000/api/v1/cats').then(response => {
+    static getItems() {
+      return fetch(constants.API_PRODUCTS).then(response => {
         return response.json();
       }).catch(error => {
-        return error;
+        return error
       });
     }
   
-    static deleteItem(url, id) {
-      const request = new Request(`${url}/${id}`, {
+    static deleteItem(id) {
+      const request = new Request(`${constants.API_PRODUCTS}/${id}`, {
         method: 'DELETE'
       });
   

@@ -1,69 +1,76 @@
 import itemService from '../services/item.service';
+import constants from '../constants/constants';
 
 export function itemsHasErrored(bool) {
     return {
-        type: 'ITEMS_HAS_ERRORED',
+        type: constants.types.ITEMS_HAS_ERRORED,
         hasErrored: bool
     }
 }
 
 export function itemsIsLoading(bool) {
     return {
-        type: 'ITEMS_IS_LOADING',
+        type: constants.types.ITEMS_IS_LOADING,
         isLoading: bool
     }
 }
 
 export function getItemsData(items) {
     return {
-        type: 'GET_ITEMS_DATA',
+        type: constants.types.GET_ITEMS_DATA,
         items
     }
 }
 
 export function deleteItemSuccess(item) {
-    return {type: 'DELETE_ITEM_BY_ID', item}
-}
-
-export function deleteItem(url, item) {
-    return (dispatch) => {
-        
-        return itemService.deleteItem(url, item).then(() => {
-            dispatch(deleteItemSuccess(item));
-        return;
-            }).catch(error => {
-        throw(error);
-        })
+    return {type: constants.types.DELETE_ITEM_BY_ID, item
     }
 }
 
-export function updateItemSuccess(items, itemToUpdate) {
+export function deleteItem(item) {
+    return (dispatch) => {
+        
+        // return itemService.deleteItem(item).then(() => { //this is hard api removal
+        //         dispatch(deleteItemSuccess(item));
+        //         return;
+        //     })
+        //     .catch(error => {
+        //         throw(error);
+        //     });
+        
+        //but i use soft one
+        return dispatch(deleteItemSuccess(item))
+    }
+}
+
+export function updateItemSuccess(itemToUpdate) {
     return {
-        type: 'UPDATE_ITEM',
-        items,
+        type: constants.types.UPDATE_ITEM,
         itemToUpdate
     }
 }
 
-export function updateItem(items, itemToUpdate) {
+export function updateItem(itemToUpdate) {
     return (dispatch) => {
-         return dispatch(updateItemSuccess(items, itemToUpdate))
+         return dispatch(updateItemSuccess(itemToUpdate))
     }
 }
 
 export function itemsFetchData(url) {
     return (dispatch) => {
         dispatch(itemsIsLoading(true));
-        fetch(url)
-            .then((response) => {
-                if (!response.ok) {
+
+            return itemService.getItems().then((items) => { 
+                if (typeof items !== 'object') {
                     dispatch(itemsHasErrored(true));
-                    throw Error(response.statusText);
+                    return;
                 }
                 dispatch(itemsIsLoading(false));
-                return response;
+                dispatch(getItemsData(items));
+                return;
             })
-            .then((response) => response.json())
-            .then((items) => dispatch(getItemsData(items)));
+            .catch(() => {
+                dispatch(itemsHasErrored(true));
+            });
     };
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Button from '../CartProductButton/CartProductButton';
+import CartSkuPicker from '../CartSkuPicker/CartSkuPicker';
 import constants from '../../../constants/constants';
 import { connect } from 'react-redux';
 import { deleteItem, updateItem } from '../../../actions/cartItems';
@@ -10,27 +11,28 @@ class CartProduct extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            product: Object.assign({}, this.props.product),
+            product: Object.assign({}, this.props.product)
         }
         this.availableQty = this.props.product.quantity;
     }
 
-    componentDidMount() {
-        
-    }
-
     decrement() {
         --this.state.product.quantity;
-        this.props.updateProduct(this.props.items, this.state.product);  
+        this.props.updateProduct(this.state.product);  
     }
 
     removeProduct() {
-        this.props.delete(constants.API_PRODUCTS, this.props.product.id);
+        this.props.delete(this.props.product.id);
     }
 
     increment() {
         ++this.state.product.quantity;
-        this.props.updateProduct(this.props.items, this.state.product)
+        this.props.updateProduct(this.state.product)
+    }
+
+    handleChange(event) {
+        this.state.product.activeSku =  event.target.value
+        this.props.updateProduct(this.state.product)
     }
     
     render() {
@@ -44,18 +46,14 @@ class CartProduct extends Component {
                     </div>
                 </div>
                 <div className="content">
-                    <div className="content-title">
-                        {product.title}
-                    </div>
-                    <div className="content-description">
-                        {product.subtitle}
-                    </div>
+                    <div className="content-title">{product.title}</div>
+                    <div className="content-description">{product.subtitle}</div>
                     <div className="content-select">
-                        <select>
-                            {product.sku.map((name, index) =>{
-                                return <option key={index} value={name}>{name}</option>;
-                            })}
-                        </select>
+                        <CartSkuPicker 
+                            onChange={::this.handleChange} 
+                            value={product.activeSku} 
+                            sku={product.sku} 
+                        />
                     </div>
                 </div>
                 <div className="actions">
@@ -76,7 +74,7 @@ class CartProduct extends Component {
                         />
                     </div>
                     <div className="actions-price">
-                        {product.quantity * product.price} {constants.currency.euro}
+                        {product.quantity * product.sku[product.activeSku].price} {constants.currency.euro}
                     </div>
                 </div>
             </div>
@@ -93,7 +91,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         delete: (url, id) => dispatch(deleteItem(url, id)),
-        updateProduct: (items, itemToUpdate) => dispatch(updateItem(items, itemToUpdate))
+        updateProduct: (itemToUpdate) => dispatch(updateItem(itemToUpdate))
     };
 };
 

@@ -31,7 +31,7 @@ class CartSummary extends Component {
         let price = 0;
         
         items.map(item => {
-            price += item.price*item.quantity;
+            price += item.sku[item.activeSku].price*item.quantity;
         })
         return price;
     }
