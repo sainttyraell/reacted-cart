@@ -18,8 +18,26 @@ export function itemsIsLoading(state = false, action) {
 
 export function items(state = [], action) {
   switch (action.type) {
-      case 'ITEMS_FETCH_DATA_SUCCESS':
-          return action.items;
+        case 'UPDATE_ITEM':
+            const newItems = action.items.map((item) => {
+                if (item.id === action.itemToUpdate.id) {
+                    return action.itemToUpdate
+                } else {
+                    return item
+                }
+            })
+            action.items = newItems;
+            return action.items;
+        case 'GET_ITEMS_DATA':
+            return action.items;
+        
+        case 'DELETE_ITEM_BY_ID': 
+            const newState = Object.assign([], state);
+            const itemToDelete = state.findIndex(item => item.id === action.item);
+            
+            newState.splice(itemToDelete, 1);
+            return newState;
+        
       default:
           return state;
   }

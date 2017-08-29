@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Button from '../CartProductButton/CartProductButton';
+import constants from '../../../constants/constants';
 import { connect } from 'react-redux';
+import { deleteItem, updateItem } from '../../../actions/cartItems';
 
 import './CartProduct.scss';
 
@@ -8,28 +10,32 @@ class CartProduct extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            quantity: this.props.product.quantity
+            product: Object.assign({}, this.props.product),
         }
-        this.currency = '€'
-        this.decrement = this.decrement.bind(this);
-        this.increment = this.increment.bind(this);        
+        this.availableQty = this.props.product.quantity;
+    }
+
+    componentDidMount() {
+        
     }
 
     decrement() {
-        this.setState({
-            quantity: --this.state.quantity
-        })
+        --this.state.product.quantity;
+        this.props.updateProduct(this.props.items, this.state.product);  
+    }
+
+    removeProduct() {
+        this.props.delete(constants.API_PRODUCTS, this.props.product.id);
     }
 
     increment() {
-        this.setState({
-            quantity: ++this.state.quantity
-        })
+        ++this.state.product.quantity;
+        this.props.updateProduct(this.props.items, this.state.product)
     }
     
     render() {
-        const { product } = this.props;
-        
+        const { product } = this.state;
+
         return (
             <div className="cart-product">
                 <div className="image">
@@ -54,23 +60,23 @@ class CartProduct extends Component {
                 </div>
                 <div className="actions">
                     <div className="actions-delete">
-                        usuń
+                       <span onClick={::this.removeProduct}>usuń</span>
                     </div>
                     <div className="actions-counter">
                         <Button
                             type="dec" 
-                            onClick={this.decrement}
-                            disabled={this.state.quantity === 0}
+                            onClick={::this.decrement}
+                            disabled={product.quantity === 0}
                         /> 
-                            <span>{this.state.quantity}</span> 
+                            <span>{product.quantity}</span> 
                         <Button 
                             type="inc"
-                            onClick={this.increment}
-                            disabled={this.state.quantity === product.quantity}
+                            onClick={::this.increment}
+                            disabled={product.quantity === this.availableQty}
                         />
                     </div>
                     <div className="actions-price">
-                        {this.state.quantity * product.price} {this.currency}
+                        {product.quantity * product.price} {constants.currency.euro}
                     </div>
                 </div>
             </div>
@@ -78,4 +84,17 @@ class CartProduct extends Component {
     }
 }
 
-export default CartProduct;
+const mapStateToProps = (state) => {
+    return {
+        items: state.items
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        delete: (url, id) => dispatch(deleteItem(url, id)),
+        updateProduct: (items, itemToUpdate) => dispatch(updateItem(items, itemToUpdate))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CartProduct);
