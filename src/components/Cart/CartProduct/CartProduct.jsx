@@ -7,6 +7,7 @@ import { deleteItem, updateItem } from '../../../actions/cartItems';
 
 import './CartProduct.scss';
 
+import PropTypes from 'prop-types';
 import trashImage from '../../../images/trash-icon.svg';
 
 class CartProduct extends Component {
@@ -15,7 +16,6 @@ class CartProduct extends Component {
         this.state = {
             product: Object.assign({}, this.props.product)
         }
-        this.availableQty = this.props.product.quantity;
     }
 
     decrement() {
@@ -29,12 +29,13 @@ class CartProduct extends Component {
 
     increment() {
         ++this.state.product.quantity;
-        this.props.updateProduct(this.state.product)
+        this.props.updateProduct(this.state.product);
     }
 
     handleChange(event) {
-        this.state.product.activeSku = event.target.value
-        this.props.updateProduct(this.state.product)
+        this.state.product.activeSku = event.target.value;
+        this.state.product.quantity = 0;
+        this.props.updateProduct(this.state.product);
     }
     
     render() {
@@ -44,11 +45,13 @@ class CartProduct extends Component {
             <div className="cart-product">
                 <div className="image">
                     <div className="image-box">
-                        <img src={product.imageUrl} className="image-image" /> 
+                        <img src={product.sku[product.activeSku].imageUrl} className="image-image" /> 
                     </div>
                 </div>
                 <div className="content">
-                    <div className="content-title">{product.title}</div>
+                    <div className="content-title">
+                        {product.title}: {product.sku[product.activeSku].variant}
+                    </div>
                     <div className="content-description">{product.subtitle}</div>
                     <div className="content-select">
                         <CartSkuPicker 
@@ -72,7 +75,7 @@ class CartProduct extends Component {
                         <Button 
                             type="inc"
                             onClick={::this.increment}
-                            disabled={product.quantity === this.availableQty}
+                            disabled={product.quantity === product.sku[product.activeSku].availableQuantity}
                         />
                     </div>
                     <div className="actions-price">
@@ -82,6 +85,10 @@ class CartProduct extends Component {
             </div>
         );
     }
+}
+
+CartProduct.propTypes = {
+    product: PropTypes.object
 }
 
 const mapStateToProps = (state) => {

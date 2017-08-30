@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import CartProduct from './CartProduct/CartProduct';
 import CartSummary from './CartSummary/CartSummary';
 import constants from '../../constants/constants';
-import './Cart.scss';
 
 import { connect } from 'react-redux';
 import { itemsFetchData } from '../../actions/cartItems';
+
+import PropTypes from 'prop-types';
 
 class Cart extends Component {
     componentDidMount() {
@@ -32,6 +33,12 @@ class Cart extends Component {
             </div>
         );
     }
+}
+
+Cart.propTypes = {
+    hasErrored: PropTypes.bool,
+    isLoading: PropTypes.bool,
+    items: PropTypes.array
 }
 
 const mapStateToProps = (state) => {
